@@ -6,6 +6,7 @@
 // RTR related code by H4nky84
 // Statistics collection, timestamp and code clean-up my mdapoz
 //
+#include "FlexCAN.h"
 #include <uavcan/uavcan_nxpk20/FlexCAN.h>
 
 #define FLEXCANb_MCR(b)                   (*(vuint32_t*)(b))
@@ -163,8 +164,7 @@ void FlexCAN::end (void)
  * \brief Initializes the CAN bus to the given settings
  *
  * \param baud - Set the baud rate of the bus. Only certain values are valid 50000, 100000, 125000, 250000, 500000, 1000000
- * \param filter - A default filter to use for all mailbox. Optional.
- * \param mask   - A default mask to use for all mailbox. Optional
+ * \param mask - A default mask to use for all mailbox masks. Optional.
  * \param txAlt - 1 to enable alternate Tx pin (where available)
  * \param rxAlt - 1 to enable alternate Rx pin (where available)
  *
@@ -173,6 +173,7 @@ void FlexCAN::end (void)
  */
 
 void FlexCAN::begin (uint32_t baud, const CAN_filter_t &filter, uint32_t mask, uint8_t txAlt, uint8_t rxAlt)
+
 {
     initializeBuffers();
     
@@ -220,7 +221,7 @@ void FlexCAN::begin (uint32_t baud, const CAN_filter_t &filter, uint32_t mask, u
 
     FLEXCANb_MCR(flexcanBase) |= FLEXCAN_MCR_IRMQ;
 
-    // now have to set mask and filter for all the Rx mailboxes or they won't receive anything by default 
+    // now have to set mask and filter for all the Rx mailboxes or they won't receive anything by default.
 
     for (uint8_t c = 0; c < getNumRxBoxes(); c++) {
         setMask (mask, c);
@@ -636,7 +637,7 @@ void FlexCAN::setFilter (const CAN_filter_t &filter, uint8_t mbox)
     if ( mbox < getNumRxBoxes() ) {
         MBFilters[mbox] = filter;
 
-        if (!filter.flags.extended) {
+        if (filter.flags.extended) {
             FLEXCANb_MBn_ID(flexcanBase, mbox) = (filter.id & FLEXCAN_MB_ID_EXT_MASK);
             FLEXCANb_MBn_CS(flexcanBase, mbox) |= FLEXCAN_MB_CS_IDE;
         } else {
@@ -733,6 +734,23 @@ uint32_t FlexCAN::freeTxBuffer (void)
 }
 
 /*
+ * \brief Returns if an TX Mailbox is available
+ *
+ * Returns whether TX mailbox is available
+ */
+bool FlexCAN::availableTXMailbox(void)
+{
+    for (uint32_t i = getFirstTxBox(); i < getNumMailBoxes(); i++) {
+        if (FLEXCAN_get_code(FLEXCANb_MBn_CS(flexcanBase, i)) == FLEXCAN_MB_CODE_TX_INACTIVE ) {
+            return true; // found one
+        }
+    }
+    return false;
+}
+
+
+
+/*
  * \brief Clear the collected statistics
  *
  * \param None
@@ -777,21 +795,6 @@ int FlexCAN::read (CAN_message_t &msg)
     irqRelease();
 
     return result;
-}
-
-/*
- * \brief Returns if an TX Mailbox is available
- *
- * Returns whether TX mailbox is available
- */
-bool FlexCAN::availableTXMailbox(void)
-{
-    for (uint32_t i = getFirstTxBox(); i < getNumMailBoxes(); i++) {
-        if (FLEXCAN_get_code(FLEXCANb_MBn_CS(flexcanBase, i)) == FLEXCAN_MB_CODE_TX_INACTIVE ) {
-            return true; // found one
-        }
-    }
-    return false;
 }
 
 /*
@@ -1225,7 +1228,7 @@ void FlexCAN::message_isr (void)
             // so after a frame comes in we've got to refresh the ID field to be the filter ID and not the ID
             // that just came in.
 
-            if (!MBFilters[i].flags.extended) {
+            if (MBFilters[i].flags.extended) {
                 FLEXCANb_MBn_ID(flexcanBase, i) = (MBFilters[i].id & FLEXCAN_MB_ID_EXT_MASK);
             } else {
                 FLEXCANb_MBn_ID(flexcanBase, i) = FLEXCAN_MB_ID_IDSTD(MBFilters[i].id);

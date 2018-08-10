@@ -22,7 +22,7 @@
 
 #define SIZE_LISTENERS  4  // number of classes that can register as listeners on each CAN bus
 #define NUM_MAILBOXES   16 // architecture specific but all Teensy 3.x boards have 16 mailboxes
-#define IRQ_PRIORITY    0 // 0 = highest, 255 = lowest
+#define IRQ_PRIORITY    64 // 0 = highest, 255 = lowest
 
 #define COLLECT_CAN_STATS
 
@@ -73,6 +73,7 @@ typedef struct ringbuffer_t {
 } ringbuffer_t;
 
 // for backwards compatibility with previous structure members
+
 #define	ext flags.extended
 #define	rtr flags.remote
 
@@ -171,7 +172,7 @@ public:
     inline uint8_t getNumMailBoxes() { return NUM_MAILBOXES; }
     inline uint8_t getNumRxBoxes() { return getNumMailBoxes()-numTxMailboxes; }
     
-    void begin (uint32_t baud = 250000, const CAN_filter_t &filter = defaultMask, uint32_t mask = 0,  uint8_t txAlt = 0, uint8_t rxAlt = 0);
+    void begin (uint32_t baud = 250000, const CAN_filter_t &filter = defaultMask, uint32_t mask = 0, uint8_t txAlt = 0, uint8_t rxAlt = 0);
 
     void setFilter (const CAN_filter_t &filter, uint8_t n);
     bool getFilter (CAN_filter_t &filter, uint8_t n);
