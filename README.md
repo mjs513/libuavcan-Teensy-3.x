@@ -11,6 +11,7 @@ UAVCAN is a lightweight protocol designed for reliable communication in aerospac
 * [Libuavcan overview](http://uavcan.org/Implementations/Libuavcan/)
 * [List of platforms officially supported by libuavcan](http://uavcan.org/Implementations/Libuavcan/Platforms/)
 * [Libuavcan tutorials](http://uavcan.org/Implementations/Libuavcan/Tutorials/)
+* [Teensy UAVcan Forum Thread](https://forum.pjrc.com/threads/53394-UAVcan-for-Teensy-3-x-Proof-of-Concept)
 
 ## Library usage
 
