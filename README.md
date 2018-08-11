@@ -4,6 +4,8 @@ Portable reference implementation of the [UAVCAN protocol stack](http://uavcan.o
 
 UAVCAN is a lightweight protocol designed for reliable communication in aerospace and robotic applications via CAN bus.
 
+The teensy driver and examples are taken from the UAVcan website and tum-phoenix (https://github.com/tum-phoenix/drive_teensy_main and https://github.com/tum-phoenix/drive_teensy_libuavcan) and modified appropriately.
+
 ## Documentation
 
 * [UAVCAN website](http://uavcan.org)
