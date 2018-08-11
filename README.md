@@ -17,6 +17,8 @@ The teensy driver and examples are taken from the UAVcan website and tum-phoenix
 
 ## Library usage
 
+Copy the library into the Arduino libraries folder and run examples as you would normally using the Arduino IDE.
+
 ### Dependencies
 
 * Python 2.7 or 3.3 or newer
@@ -32,3 +34,8 @@ The following components will be installed:
 
 Note that Pyuavcan (an implementation of UAVCAN in Python) will not be installed.
 You will need to install it separately if you intend to use the Libuavcan's DSDL compiler in your applications.
+
+### Driver
+
+The driver is based on the Collins80 Flexcan library as modified in the thread found on this thread: https://forum.pjrc.com/threads/45017...light=nmea2000.
+
