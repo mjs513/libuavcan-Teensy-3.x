@@ -39,3 +39,10 @@ You will need to install it separately if you intend to use the Libuavcan's DSDL
 
 The driver is based on the Collins80 Flexcan library as modified in the thread found on this thread: https://forum.pjrc.com/threads/45017...light=nmea2000.
 
+### Issues resolved (history on getting this working)
+
+* [Subscribing to vendor specific messages ](https://groups.google.com/forum/#!topic/uavcan/gK6vNSfmQG8)
+* [Compiler errors on missing files in uavcan/protocol directory ](https://github.com/UAVCAN/libuavcan/issues/157)
+* [ReceivedDataStructure - can't seem to figure out how to make it work  ](https://github.com/tum-phoenix/drive_teensy_main/issues/4)
+* [Not reading Subscribed ImuData ](https://github.com/tum-phoenix/drive_teensy_main/issues/3)
+* [Printf revisited? ](https://forum.pjrc.com/threads/53423-Printf-revisited)
