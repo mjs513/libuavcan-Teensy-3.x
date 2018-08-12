@@ -11,13 +11,6 @@
 
 using namespace uavcan;
 
-// this is important for UAVCAN to compile
-extern "C"{
-  int _getpid(){ return -1;}
-  int _kill(int pid, int sig){ return -1; }
-  int _write(){return -1;}
-}
-
 // git commit id is automatically generated in build process and included in software version below
 #ifdef __GIT_HASH__
   #define GIT_HASH __GIT_HASH__
