@@ -16,7 +16,6 @@
 #include <uavcan/transport/crc.hpp>
 #include <uavcan/data_type.hpp>
 
-
 namespace uavcan
 {
 /**
@@ -129,7 +128,8 @@ protected:
     virtual void handleIncomingTransfer(IncomingTransfer& transfer) = 0;
 
 public:
-    TransferListener(TransferPerfCounter& perf, const DataTypeDescriptor& data_type, uint16_t max_buffer_size, IPoolAllocator& allocator)
+    TransferListener(TransferPerfCounter& perf, const DataTypeDescriptor& data_type,
+                     uint16_t max_buffer_size, IPoolAllocator& allocator)
         : data_type_(data_type)
         , bufmgr_(max_buffer_size, allocator)
         , receivers_(allocator)

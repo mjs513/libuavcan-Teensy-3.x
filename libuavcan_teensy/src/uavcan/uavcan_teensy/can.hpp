@@ -3,16 +3,16 @@
  * @author fwindolf - Florian Windolf  florianwindolf@gmail.com
  */
 
-#ifndef UAVCAN_NXPK20_CAN_HPP_INCLUDED
-#define UAVCAN_NXPK20_CAN_HPP_INCLUDED
+#ifndef UAVCAN_TEENSY_CAN_HPP_INCLUDED
+#define UAVCAN_TEENSY_CAN_HPP_INCLUDED
 
 
 #include <uavcan/driver/can.hpp>
-#include "FlexCAN.h"
+#include "IFCT.h"
 
 using namespace uavcan;
 
-namespace uavcan_nxpk20
+namespace uavcan_teensy
 {
 
 struct IfaceParams{
@@ -30,15 +30,15 @@ class CanIface:
 {
 private:
   static CanIface self;
-
+  
   // pointer to the flexcan object
-  FlexCAN* flexcan;
+  IFCT* flexcan;
   
 public:
   /**
    * Constructor
    */
-  CanIface(FlexCAN* f)
+  CanIface(IFCT* f)
    : flexcan(f) 
   {};
 
@@ -205,6 +205,6 @@ private:
 
 };
 
-} // uavcan_nxpk20
+} // uavcan_teensy
 
 #endif // UAVCAN_NXPK20_CAN_HPP_INCLUDED

@@ -3,10 +3,11 @@
  * @author fwindolf - Florian Windolf  florianwindolf@gmail.com
  */
 
-#include <uavcan/uavcan_nxpk20/can.hpp>
-#include <uavcan/uavcan_nxpk20/clock.hpp>
+#include <uavcan/uavcan_teensy/can.hpp>
+#include <uavcan/uavcan_teensy/clock.hpp>
+#include <Arduino.h>  //only needed for debug purposes
 
-namespace uavcan_nxpk20
+namespace uavcan_teensy
 {
 
 // Init static variable
@@ -16,6 +17,7 @@ CanDriver CanDriver::self;
 // initialize can driver
 void CanIface::init(const IfaceParams& p)
 {
+     
   // set mailbox and buffer sizes
   flexcan->setTxBufferSize(p.tx_buff_size);
   flexcan->setRxBufferSize(p.rx_buff_size);
@@ -25,8 +27,9 @@ void CanIface::init(const IfaceParams& p)
   start_filter.id = 0;
   uint32_t start_mask = p.dis_all_RX_by_default ? 0xFFFFFFFF : 0;
 
-  // // start flexcan interface
-  flexcan->begin(p.bitrate, start_filter, start_mask, p.use_alt_tx_pin, p.use_alt_rx_pin);
+  // // start flexcan interface start_mask, 
+  flexcan->begin(p.bitrate, start_filter,  p.use_alt_tx_pin, p.use_alt_rx_pin);
+  
 }
 
 // sends a CAN frame
@@ -35,6 +38,7 @@ int16_t CanIface::send(const CanFrame& frame, MonotonicTime tx_deadline, CanIOFl
   // Frame was not transmitted until tx deadline
   if(!tx_deadline.isZero() && clock::getMonotonic() >= tx_deadline)
   {
+    //Serial.println("Tx deadline hit");
     return -1;
   }
 
@@ -44,20 +48,30 @@ int16_t CanIface::send(const CanFrame& frame, MonotonicTime tx_deadline, CanIOFl
 
   CAN_message_t msg;
   msg.id = frame.id;
-  msg.flags.extended = frame.isExtended();
+  msg.flags.extended = frame.isExtended();  
   msg.flags.remote = frame.isRemoteTransmissionRequest();
   msg.len = frame.dlc;
-  for(int i=0; i<frame.dlc; i++)
+  for(int i=0; i<msg.len; i++)
   {
     msg.buf[i] = frame.data[i];
   }
 
-  return flexcan->write(msg);
+  Serial.print("TX LEN: "); Serial.print(msg.len);
+  Serial.print(" EXT: "); Serial.print(msg.flags.extended);
+  Serial.print(" REMOTE: "); Serial.print(msg.flags.remote);
+  Serial.print(" FrameID: "); Serial.print(msg.id);
+
+  Serial.print(" Buffer: ");
+  for ( uint8_t i = 0; i < msg.len; i++ ) {
+    Serial.print(msg.buf[i], HEX); Serial.print(" ");
+  } Serial.println();
+
+  //return flexcan->writeTEST(msg);
+  return flexcan->write(msg, MB14);
 }
 
 // receives a CAN frame
-int16_t CanIface::receive(CanFrame& out_frame, MonotonicTime& out_ts_monotonic, UtcTime& out_ts_utc,
-                           CanIOFlags& out_flags)
+int16_t CanIface::receive(CanFrame& out_frame, MonotonicTime& out_ts_monotonic, UtcTime& out_ts_utc, CanIOFlags& out_flags)
 {
 
   CAN_message_t msg;
@@ -83,7 +97,14 @@ int16_t CanIface::receive(CanFrame& out_frame, MonotonicTime& out_ts_monotonic, 
   {
     out_frame.data[i] = msg.buf[i];
   }
+/*
+  Serial.print("RX FrameID: "); Serial.print(out_frame.id);
 
+  Serial.print(" Buffer: ");
+  for ( uint8_t i = 0; i < msg.len; i++ ) {
+    Serial.print(msg.buf[i], HEX); Serial.print(" ");
+  } Serial.println();
+*/
   return 1;
 }
 
@@ -127,7 +148,6 @@ bool CanIface::availableToReadMsg() const
 
 bool CanIface::availableToSendMsg() const
 {
-
   return flexcan->freeTxBuffer();
 }
 
@@ -203,7 +223,7 @@ int16_t CanDriver::select(CanSelectMasks& inout_masks,
         readyDevices = 1;
       }
     #endif
-
+    
     // if blocking_deadline is zero -> non blocking operation
     if(readyDevices > 0 || blocking_deadline.isZero())
     {
@@ -217,4 +237,4 @@ int16_t CanDriver::select(CanSelectMasks& inout_masks,
 
 }
 
-} // uavcan_nxpk20
+} // uavcan_teensy

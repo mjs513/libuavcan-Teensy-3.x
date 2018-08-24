@@ -58,6 +58,7 @@
  * This macro can be overriden if needed.
  */
 
+#  define UAVCAN_GENERAL_PURPOSE_PLATFORM 0
 #ifndef UAVCAN_GENERAL_PURPOSE_PLATFORM
 # if (defined(__linux__)    || defined(__linux)     || defined(__APPLE__)   ||\
       defined(_WIN64)       || defined(_WIN32)      || defined(__ANDROID__) ||\
@@ -137,11 +138,12 @@
  * toString() methods will be disabled by default, unless the library is built for a general-purpose target like Linux.
  * It is not recommended to enable toString() on embedded targets as code size will explode.
  */
+
 #ifndef UAVCAN_TOSTRING
 # if UAVCAN_EXCEPTIONS
 #  define UAVCAN_TOSTRING UAVCAN_GENERAL_PURPOSE_PLATFORM
 # else
-#  define UAVCAN_TOSTRING 0
+#  define UAVCAN_TOSTRING 0 
 # endif
 #endif
 
@@ -151,6 +153,7 @@
 # endif
 # include <string>
 #endif
+
 
 /**
  * Some C++ implementations are half-broken because they don't implement the placement new operator.
@@ -165,6 +168,7 @@
  * Allows the user's application to provide custom implementation of uavcan::snprintf(),
  * which is often useful on deeply embedded systems.
  */
+ 
 #ifndef UAVCAN_USE_EXTERNAL_SNPRINTF
 # define UAVCAN_USE_EXTERNAL_SNPRINTF   0
 #endif

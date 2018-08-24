@@ -3,9 +3,9 @@
  * @author fwindolf - Florian Windolf  florianwindolf@gmail.com
  */
 #include <Arduino.h>
-#include <uavcan/uavcan_nxpk20/clock.hpp>
+#include <uavcan/uavcan_teensy/clock.hpp>
 
-namespace uavcan_nxpk20
+namespace uavcan_teensy
 {
 namespace clock
 {
@@ -96,4 +96,4 @@ SystemClock& SystemClock::instance()
   return self;
 }
 
-} // uavcan_nxpk20
+} // uavcan_teensy
