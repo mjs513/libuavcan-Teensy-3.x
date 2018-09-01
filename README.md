@@ -46,3 +46,6 @@ The driver is based on the Collins80 Flexcan library as modified in the thread f
 * [ReceivedDataStructure - can't seem to figure out how to make it work  ](https://github.com/tum-phoenix/drive_teensy_main/issues/4)
 * [Not reading Subscribed ImuData ](https://github.com/tum-phoenix/drive_teensy_main/issues/3)
 * [Printf revisited? ](https://forum.pjrc.com/threads/53423-Printf-revisited)
+
+### CHANGE LOG
+9/1/2018 - Merged development Branch into Master.  The merge brings in tonton81's new and improbed IFCT CAN Library.  It also updates examples to include how to use built in functions to send messages at a specific rate.
