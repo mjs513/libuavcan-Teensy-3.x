@@ -10,7 +10,7 @@ using namespace equipment;
 using namespace gnss;
 
 // GPS - publish at fixed rate
-int gps_update_rate = 10; // # times per second, 10 = 100ms update
+int gps_update_rate = 100;
 MonotonicTime last_gps_update = MonotonicTime::fromMSec(0);
 
 // publisher
@@ -31,7 +31,7 @@ void initPublisher(Node<NodeMemoryPoolSize> *node)
     Serial.println("FixPublisher initialize!");
   }
   // set TX timeout
-  FixPublisher->setTxTimeout(MonotonicDuration::fromUSec(1000));
+  FixPublisher->setTxTimeout(MonotonicDuration::fromUSec(10000));
 
 }
 
@@ -39,12 +39,13 @@ void initPublisher(Node<NodeMemoryPoolSize> *node)
 void cyclePublisher()
 {
   // gps update -> at gps_update_rate -> check time first
-  if((last_gps_update +
-     MonotonicDuration::fromMSec(1000/(float)gps_update_rate)) <
-     systemClock->getMonotonic())
+  //if(last_gps_update +
+  //   MonotonicDuration::fromMSec(1000/(float)gps_update_rate) <
+  //   systemClock->getMonotonic())
+  if(cycleTimer > 100)
   {
     // it is time for an update of the gps readings
-    last_gps_update = systemClock->getMonotonic();
+    //last_gps_update = systemClock->getMonotonic();
 
     //Read acual GPS data here in place of test data
     equipment::gnss::Fix Fix_msg;
@@ -61,12 +62,13 @@ void cyclePublisher()
     Fix_msg.sats_used = 9;
     Fix_msg.status = 3;
     Fix_msg.pdop = 1.1;
-
+    Serial.print("Broadcastin Error: "); 
+    Serial.println(FixPublisher->broadcast(Fix_msg));
     if (FixPublisher->broadcast(Fix_msg) < 0)
     {
       Serial.println("Error while broadcasting key message");
-      Serial.println(FixPublisher->broadcast(Fix_msg));
     }
+    cycleTimer = 0;
   }
 }
 

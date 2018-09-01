@@ -28,7 +28,7 @@ void CanIface::init(const IfaceParams& p)
   uint32_t start_mask = p.dis_all_RX_by_default ? 0xFFFFFFFF : 0;
 
   // // start flexcan interface start_mask, 
-  flexcan->begin(p.bitrate, start_filter,  p.use_alt_tx_pin, p.use_alt_rx_pin);
+  flexcan->begin(p.bitrate, start_filter, start_mask, p.use_alt_tx_pin, p.use_alt_rx_pin);
   
 }
 
@@ -56,18 +56,24 @@ int16_t CanIface::send(const CanFrame& frame, MonotonicTime tx_deadline, CanIOFl
     msg.buf[i] = frame.data[i];
   }
 
-  Serial.print("TX LEN: "); Serial.print(msg.len);
-  Serial.print(" EXT: "); Serial.print(msg.flags.extended);
-  Serial.print(" REMOTE: "); Serial.print(msg.flags.remote);
-  Serial.print(" FrameID: "); Serial.print(msg.id);
+  msg.seq = 1;
+  if(DEBUG) {
+      Serial1.println(); 
+      Serial1.print("(UAVcan MSG) FrameID: "); Serial1.print(msg.id);
+      Serial1.print(" TX LEN: "); Serial1.print(msg.len);
+      Serial1.print(" EXT: "); Serial1.print(msg.flags.extended);
+      Serial1.print(" REMOTE: "); Serial1.print(msg.flags.remote);
 
-  Serial.print(" Buffer: ");
-  for ( uint8_t i = 0; i < msg.len; i++ ) {
-    Serial.print(msg.buf[i], HEX); Serial.print(" ");
-  } Serial.println();
+      Serial1.print(" Buffer: ");
+      for ( uint8_t i = 0; i < msg.len; i++ ) {
+        Serial1.print(msg.buf[i], HEX); Serial1.print(" ");
+      } 
+      Serial1.println();
+  }
 
-  //return flexcan->writeTEST(msg);
-  return flexcan->write(msg, MB14);
+  int res = flexcan->write(msg);
+  return res;
+  //return flexcan->write(msg, MB14);
 }
 
 // receives a CAN frame

@@ -1,45 +1,41 @@
 #include "Arduino.h"
-
-#define printf Serial.printf
+elapsedMillis cycleTimer;
 
 // CAN Node settings
-static constexpr uint32_t nodeID = 101;
+static constexpr uint32_t nodeID = 102;
 static constexpr uint8_t swVersion = 1;
 static constexpr uint8_t hwVersion = 1;
-static const char* nodeName = "org.phoenix.subscriber";
+static const char* nodeName = "org.uavcan.gnss";
 
 // application settings
 static constexpr float framerate = 100;
 
 #include "phoenix_can_shield.h"
-#include "Subscriber.h"
+#include "Publisher.h"
 
 // this is important for UAVCAN to compile
 namespace std {
   void __throw_bad_alloc()
   {
     Serial.println("Unable to allocate memory");
-    for(;;){}
+    for(;;){};
   }
 
   void __throw_length_error( char const*e )
   {
     Serial.print("Length Error :");
     Serial.println(e);
-    for(;;){}
+    for(;;){};
   }
 
   void __throw_bad_function_call()
   {
     Serial.println("Bad function call!");
-    for(;;){}
+    for(;;){};
   }
-
 }
 
 void setup() {
-  //get EEPROM Parameters
-  //readParamsFromEEPROM();
   delay(3000);
   Serial.begin(115200);
   Serial.println("Setup");
@@ -53,9 +49,9 @@ void setup() {
   node = new Node<NodeMemoryPoolSize>(*canDriver, *systemClock);
   bool nodeStart = initNode(node, nodeID, nodeName, swVersion, hwVersion);
   
-  // init subscriber
-  initSubscriber(node);
-  
+  // init publisher
+  initPublisher(node);
+
   // set up filters
   configureCanAcceptanceFilters(*node);
 
@@ -70,17 +66,19 @@ void setup() {
 uint32_t t_ = 0;
 void loop() {
   // wait in cycle
-
   uint32_t t = micros();
   Serial.print("CPU Load: ");
   Serial.println((float)(t-t_)/100);
   cycleWait(framerate);
   t_ = micros();
-
-  printf("Cycling");
-  // get RC data, high level commands, motor telemetry rear motors
+  Serial.println();
+  
+  // get gps data, high level commands, motor telemetry rear motors
   cycleNode(node);
+
+  // cycle publisher
+  cyclePublisher();
   
   // toggle heartbeat
-  //toggleHeartBeat();
+  toggleHeartBeat();
 }

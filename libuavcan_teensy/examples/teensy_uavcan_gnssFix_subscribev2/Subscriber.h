@@ -1,7 +1,7 @@
 #ifndef	SUBSCRIBER_HPP
 #define	SUBSCRIBER_HPP
 
-#define printf Serial.printf 
+
 
 #include <uavcan/uavcan.hpp>
 #include <uavcan/dsdlc/equipment/gnss/Fix.hpp>

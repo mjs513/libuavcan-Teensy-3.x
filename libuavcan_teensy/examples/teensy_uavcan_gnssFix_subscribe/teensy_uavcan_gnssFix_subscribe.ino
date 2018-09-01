@@ -24,11 +24,13 @@ namespace std {
   {
     Serial.print("Length Error :");
     Serial.println(e);
+    for(;;){}
   }
 
   void __throw_bad_function_call()
   {
     Serial.println("Bad function call!");
+    for(;;){}
   }
 
 }

@@ -6,7 +6,7 @@
 ///////////////////////////////////////
 
 #include <uavcan.h>
-#include <uavcan/uavcan_nxpk20/uavcan_nxpk20.hpp>
+#include <uavcan/uavcan_teensy/uavcan_teensy.hpp>
 #include <uavcan/transport/can_acceptance_filter_configurator.hpp>
 
 using namespace uavcan;
@@ -20,7 +20,7 @@ using namespace uavcan;
 #endif
 
 // CAN interface parameter    
-uavcan_nxpk20::IfaceParams iface_param[] = {
+uavcan_teensy::IfaceParams iface_param[] = {
     // configuration of CAN0
     {
       .bitrate=1000000,               // bit rate of can bus
@@ -43,7 +43,7 @@ ICanDriver* canDriver;
 // init system clock interface
 ISystemClock& initSystemClock()
 {
-  return uavcan_nxpk20::SystemClock::instance();
+  return uavcan_teensy::SystemClock::instance();
 }
 
 // init can driver interface
@@ -54,9 +54,9 @@ ICanDriver& initCanDriver()
   {
       initialized = true;
       
-      uavcan_nxpk20::CanDriver::instance().init(iface_param);
+      uavcan_teensy::CanDriver::instance().init(iface_param);
   }
-  return uavcan_nxpk20::CanDriver::instance();
+  return uavcan_teensy::CanDriver::instance();
 }
 
 // restart addresses. More Info:

@@ -1,10 +1,11 @@
 #include "Arduino.h"
+elapsedMillis cycleTimer;
 
 // CAN Node settings
 static constexpr uint32_t nodeID = 102;
 static constexpr uint8_t swVersion = 1;
 static constexpr uint8_t hwVersion = 1;
-static const char* nodeName = "org.phoenix.gnss";
+static const char* nodeName = "org.uavcan.gnss";
 
 // application settings
 static constexpr float framerate = 100;
@@ -51,7 +52,6 @@ void setup() {
   // init publisher
   initPublisher(node);
 
-
   // set up filters
   configureCanAcceptanceFilters(*node);
 
@@ -60,7 +60,6 @@ void setup() {
   node->setModeOperational();
 
   Serial.println("Node Setup Finished");
-
 
 }
 
@@ -72,13 +71,13 @@ void loop() {
   Serial.println((float)(t-t_)/100);
   cycleWait(framerate);
   t_ = micros();
-
-  // get RC data, high level commands, motor telemetry rear motors
+  
+  // get gps data, high level commands, motor telemetry rear motors
   cycleNode(node);
 
   // cycle publisher
-  cyclePublisherFix();
- 
+  cyclePublisher();
+  
   // toggle heartbeat
   toggleHeartBeat();
 }

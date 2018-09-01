@@ -11,7 +11,6 @@
 
 using namespace uavcan;
 
-
 // git commit id is automatically generated in build process and included in software version below
 #ifdef __GIT_HASH__
   #define GIT_HASH __GIT_HASH__
@@ -24,8 +23,8 @@ uavcan_teensy::IfaceParams iface_param[] = {
     // configuration of CAN0
     {
       .bitrate=1000000,               // bit rate of can bus
-      .tx_buff_size=64,               // TX ring buffer size
-      .rx_buff_size=64,               // RX ring buffer size
+      .tx_buff_size=50,               // TX ring buffer size
+      .rx_buff_size=50,               // RX ring buffer size
       .use_alt_tx_pin = false,        // use alternative TX pin
       .use_alt_rx_pin = false,        // use alternative RX pin
       .dis_all_RX_by_default = false  // disables all RX mailboxes and only allows receiving of can messages configured via configureCanAcceptanceFilters()
@@ -120,7 +119,7 @@ void cycleNode(Node<NodeMemoryPoolSize> *node)
   if (res < 0)
   {
       Serial.println("Error while spinning...");
-  } 
+  }
 }
 
 ///////////////////////////////////

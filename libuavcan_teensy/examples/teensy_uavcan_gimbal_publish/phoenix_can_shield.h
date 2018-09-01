@@ -11,7 +11,6 @@
 
 using namespace uavcan;
 
-
 // git commit id is automatically generated in build process and included in software version below
 #ifdef __GIT_HASH__
   #define GIT_HASH __GIT_HASH__
@@ -37,7 +36,7 @@ static const unsigned NodeMemoryPoolSize = 8192;  // size of node memory
 Node<NodeMemoryPoolSize> *node;
 
 // interfaces to systemclock and canDriver
-ISystemClock* systemClock;
+ISystemClock &systemClock;
 ICanDriver* canDriver;
 
 // init system clock interface
@@ -117,13 +116,10 @@ bool initNode(Node<NodeMemoryPoolSize> *node, const uint32_t nodeID, const char*
 void cycleNode(Node<NodeMemoryPoolSize> *node)
 {
   const int res = node->spinOnce();
-  //const int res = node->spin(MonotonicDuration::getInfinite());
   if (res < 0)
   {
-      Serial.print("Error while spinning...");
-      Serial.println(res);
+      Serial.println("Error while spinning...");
   }
-
 }
 
 ///////////////////////////////////
