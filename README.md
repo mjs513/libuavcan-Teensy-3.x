@@ -48,4 +48,6 @@ The driver is based on the Collins80 Flexcan library as modified in the thread f
 * [Printf revisited? ](https://forum.pjrc.com/threads/53423-Printf-revisited)
 
 ### CHANGE LOG
+9/2/2018 - Added a example of controlling a 2-axis Gimbal with a simpleBGC controller clone (2.4 firmware) along with a slightly modified version of Basecam's SBGC-API (added extra commands).  Can be seen working on YouTube: https://www.youtube.com/watch?v=eOAdpgBizgQ
+
 9/1/2018 - Merged development Branch into Master.  The merge brings in tonton81's new and improbed IFCT CAN Library.  It also updates examples to include how to use built in functions to send messages at a specific rate.
