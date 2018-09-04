@@ -51,7 +51,7 @@ void cyclePublisherBNO(imu_t bno_data)
      systemClock->getMonotonic())
      {
       // it is time for an update of the gps readings
-      last_gps_update = systemClock->getMonotonic();
+      last_imu_update = systemClock->getMonotonic();
       
       ImuData msg;
 
